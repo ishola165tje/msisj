@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Neniom – Shopify Mobile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-dark: #000000;
+    --bg-card: #ffffff;
+    --pill-selected: #1f2124;
+    --border-card: #e5e7eb;
+    --text-white: #ffffff;
+    --text-muted: #8c9196;
+    --text-dark: #111827;
+    --text-sub: #6b7280;
+    --shopify-green: #30d158;
+    --shopify-red: #ff453a;
+    --chart-blue: #38bdf8;
+    --chart-prev: #9ca3af;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font);
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  body {
+    background: #000000;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+  }
+
+  .screen {
+    width: 100%;
+    max-width: 412px;
+    background: var(--bg-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    position: relative;
+    padding-bottom: 74px;
+  }
+
+  /* Top Navigation Bar */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px 8px;
+    background: var(--bg-dark);
+  }
+
+  .avatar-left {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid #ffffff;
+    overflow: hidden;
+    background: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .avatar-left img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .avatar-left svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .store-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .store-icon-tile {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .store-icon-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .store-icon-tile svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .store-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-white);
+    letter-spacing: -0.3px;
+  }
+
+  .bell-btn {
+    background: none;
+    border: none;
+    color: var(--text-white);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    position: relative;
+  }
+  .bell-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 2;
+  }
+  .bell-pip {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 7px;
+    height: 7px;
+    background: var(--shopify-red);
+    border-radius: 50%;
+  }
+
+  /* Metrics Strip */
+  .metrics-strip {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    padding: 12px 16px 14px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .metrics-strip::-webkit-scrollbar { display: none; }
+
+  .metric-slot {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+  }
+
+  .metric-slot.live {
+    align-items: center;
+    justify-content: center;
+    padding-right: 4px;
+  }
+  .live-tag {
+    font-size: 12px;
+    color: var(--text-white);
+    font-weight: 500;
+  }
+  .live-counter {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 4px;
+    color: var(--text-white);
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .pulsing-ring {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px dashed #30d158;
+    display: inline-block;
+    animation: spinRing 6s linear infinite;
+  }
+  @keyframes spinRing {
+    to { transform: rotate(360deg); }
+  }
+
+  .metric-card-pill {
+    background: var(--pill-selected);
+    border-radius: 14px;
+    padding: 8px 14px 10px;
+    min-width: 120px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: background 0.15s ease;
+  }
+  .metric-slot.active-metric .metric-card-pill {
+    border-color: rgba(255, 255, 255, 0.22);
+    background: #24272c;
+  }
+
+  .metric-label-txt {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .metric-figure-txt {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-white);
+    margin-top: 2px;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    letter-spacing: -0.3px;
+  }
+  .delta-pct {
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .delta-pct.pos { color: var(--shopify-green); }
+  .delta-pct.neg { color: var(--shopify-red); }
+
+  .flat-metric {
+    min-width: 90px;
+    padding: 8px 6px;
+  }
+  .flat-metric .metric-figure-txt {
+    font-size: 17px;
+  }
+
+  /* Sparkline Chart Container */
+  .chart-wrapper {
+    position: relative;
+    padding: 0 16px;
+    height: 154px;
+    margin-top: 2px;
+  }
+
+  .y-labels {
+    position: absolute;
+    left: 16px;
+    top: 0;
+    height: 114px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+    pointer-events: none;
+  }
+
+  .svg-canvas {
+    width: 100%;
+    height: 120px;
+    overflow: visible;
+  }
+
+  .scrub-line {
+    stroke: rgba(255, 255, 255, 0.4);
+    stroke-dasharray: 2 2;
+    stroke-width: 1;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .scrub-dot {
+    fill: var(--chart-blue);
+    stroke: #ffffff;
+    stroke-width: 2.5;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .scrub-tooltip {
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1f2124;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.1s ease;
+    white-space: nowrap;
+  }
+
+  .x-labels {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 6px 0 28px;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  /* Filter Buttons Row */
+  .timeframe-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 18px 16px 20px;
+  }
+
+  .ctrl-chip {
+    background: #141517;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-white);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+  }
+  .ctrl-chip svg {
+    width: 15px;
+    height: 15px;
+    fill: currentColor;
+  }
+
+  /* Bottom Sheet */
+  .bottom-sheet {
+    background: var(--bg-card);
+    border-radius: 28px 28px 0 0;
+    padding: 22px 16px 40px;
+    flex: 1;
+    color: var(--text-dark);
+  }
+
+  .sheet-headline {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    color: #1f2937;
+    margin-bottom: 16px;
+  }
+
+  .activity-scroll-row {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 14px;
+    scrollbar-width: none;
+  }
+  .activity-scroll-row::-webkit-scrollbar { display: none; }
+
+  .activity-card {
+    background: #ffffff;
+    border: 1px solid var(--border-card);
+    border-radius: 16px;
+    padding: 12px 14px;
+    min-width: 142px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 74px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    cursor: pointer;
+  }
+
+  .act-title {
+    font-size: 12px;
+    color: var(--text-sub);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .act-bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .act-val {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--text-dark);
+  }
+
+  .act-icon {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: #6b7280;
+    stroke-width: 1.8;
+  }
+
+  /* Live Feed Card (Shopify Mobile App Feature) */
+  .live-order-card {
+    margin-top: 10px;
+    background: #f8fafc;
+    border: 1px solid var(--border-card);
+    border-radius: 16px;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .loc-badge {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: #e0f2fe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0284c7;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .loc-title {
+    font-size: 13.5px;
+    font-weight: 650;
+    color: #0f172a;
+  }
+  .loc-sub {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 2px;
+  }
+  .loc-price {
+    margin-left: auto;
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .promo-credit-box {
+    margin-top: 12px;
+    background: #ffffff;
+    border: 1px solid var(--border-card);
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    cursor: pointer;
+  }
+
+  .credit-head {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: #111827;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .credit-body {
+    font-size: 13px;
+    color: #4b5563;
+    line-height: 1.45;
+  }
+
+  /* Native Bottom Tab Bar (Real Shopify iOS Layout) */
+  .ios-tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 412px;
+    height: 68px;
+    background: rgba(14, 15, 17, 0.94);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 0.5px solid rgba(255, 255, 255, 0.12);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding-top: 6px;
+    z-index: 90;
+  }
+
+  .tab-item {
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 500;
+    gap: 3px;
+    cursor: pointer;
+    position: relative;
+  }
+  .tab-item.active { color: #ffffff; }
+  .tab-item svg { width: 20px; height: 20px; fill: currentColor; }
+
+  .tab-bubble {
+    position: absolute;
+    top: 0;
+    right: 22px;
+    min-width: 15px;
+    height: 15px;
+    padding: 0 4px;
+    background: var(--shopify-red);
+    color: #ffffff;
+    font-size: 9px;
+    font-weight: 700;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Admin Settings Modal */
+  .admin-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.78);
+    z-index: 300;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .admin-modal-backdrop.open { display: flex; }
+
+  .admin-sheet {
+    background: #141518;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 24px 24px 0 0;
+    width: 100%;
+    max-width: 412px;
+    padding: 14px 20px 36px;
+    max-height: 88vh;
+    overflow-y: auto;
+    color: #ffffff;
+  }
+
+  .admin-handle {
+    width: 36px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 2px;
+    margin: 0 auto 16px;
+  }
+
+  .admin-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .admin-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+  }
+
+  .admin-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .admin-label {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #f3f4f6;
+  }
+  .admin-input, .admin-select {
+    width: 165px;
+    height: 36px;
+    background: #212328;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 0 10px;
+    font-size: 13.5px;
+    color: #ffffff;
+    font-weight: 600;
+    outline: none;
+  }
+
+  .pfp-preview-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pfp-thumb {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #ffffff;
+    overflow: hidden;
+    background: #000;
+  }
+  .pfp-thumb img, .pfp-thumb svg { width: 100%; height: 100%; object-fit: cover; }
+
+  .admin-btn {
+    width: 100%;
+    height: 44px;
+    background: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-top: 18px;
+    cursor: pointer;
+  }
+
+  /* Period Dropdown Popup */
+  .period-popup {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 250;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .period-popup.open { display: flex; }
+  .period-menu-sheet {
+    background: #18191c;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    max-width: 412px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+  }
+  .period-opt {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 8px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+  }
+  .period-opt:last-child { border-bottom: none; }
+  .period-opt.selected { color: var(--shopify-green); }
+</style>
+</head>
+<body>
+
+<div class="screen">
+  <!-- Top Bar -->
+  <header class="top-bar">
+    <div class="avatar-left" id="btnOpenAdminPfp" title="Open Admin Panel">
+      <div id="pfpRenderSlot" style="width: 100%; height: 100%;">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="48" fill="#000000"/>
+          <path d="M32 20 Q50 35 68 20 Q80 45 74 62 Q66 84 50 82 Q34 84 26 62 Q20 45 32 20 Z" fill="#ffffff"/>
+          <path d="M40 38 L48 52 L36 50 Z M60 38 L64 50 L52 52 Z" fill="#000000"/>
+          <circle cx="43" cy="46" r="3" fill="#ffffff"/>
+          <circle cx="57" cy="46" r="3" fill="#ffffff"/>
+          <path d="M46 66 Q50 70 54 66" stroke="#000000" stroke-width="2" fill="none"/>
+          <path d="M22 34 Q32 26 42 36 M78 34 Q68 26 58 36" stroke="#000000" stroke-width="3" fill="none"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="store-indicator" id="btnOpenAdminStore">
+      <div class="store-icon-tile" id="storeTileSlot">
+        <svg viewBox="0 0 100 100">
+          <rect width="100" height="100" fill="#000000"/>
+          <path d="M30 25 Q50 40 70 25 Q82 50 72 70 Q50 90 28 70 Z" fill="#ffffff"/>
+        </svg>
+      </div>
+      <span class="store-name" id="uiStoreName">Neniom</span>
+    </div>
+
+    <button class="bell-btn" type="button" aria-label="Notifications" onclick="toggleBellPip()">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="bell-pip" id="uiBellPip"></span>
+    </button>
+  </header>
+
+  <!-- Metrics Strip -->
+  <section class="metrics-strip">
+    <div class="metric-slot live">
+      <span class="live-tag">Live</span>
+      <div class="live-counter">
+        <span class="pulsing-ring"></span>
+        <span id="uiLiveCount">0</span>
+      </div>
+    </div>
+
+    <div class="metric-slot active-metric" onclick="setActiveMetric(this)">
+      <div class="metric-card-pill">
+        <div class="metric-label-txt">Total sales</div>
+        <div class="metric-figure-txt">
+          <span id="uiTotalSales">$41,912</span>
+          <span class="delta-pct pos" id="uiSalesTrend">+71%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-slot flat-metric" onclick="setActiveMetric(this)">
+      <div class="metric-label-txt">Orders</div>
+      <div class="metric-figure-txt">
+        <span id="uiOrdersCount">647</span>
+        <span class="delta-pct pos" id="uiOrdersTrend">+64%</span>
+      </div>
+    </div>
+
+    <div class="metric-slot flat-metric" onclick="setActiveMetric(this)">
+      <div class="metric-label-txt">Conversion rate</div>
+      <div class="metric-figure-txt">
+        <span id="uiConvRate">0.3%</span>
+        <span class="delta-pct neg" id="uiConvTrend">-55%</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Graph -->
+  <div class="chart-wrapper" id="chartCanvasBox">
+    <div class="scrub-tooltip" id="chartTooltip">$1,840 · Jul 28</div>
+    <div class="y-labels">
+      <span id="uiYTop">$2K</span>
+      <span id="uiYMid">$1K</span>
+      <span id="uiYBot">$0</span>
+    </div>
+
+    <svg class="svg-canvas" viewBox="0 0 380 120" preserveAspectRatio="none">
+      <line x1="32" y1="12" x2="380" y2="12" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1"/>
+      <line x1="32" y1="62" x2="380" y2="62" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1"/>
+      <line x1="32" y1="112" x2="380" y2="112" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1"/>
+
+      <path id="pathBench" fill="none" stroke="var(--chart-prev)" stroke-width="1.8" stroke-dasharray="3 3.5" stroke-linecap="round" stroke-linejoin="round"
+            d="M34 88 C44 82 50 78 58 74 C66 70 72 82 80 82 C88 82 94 76 102 70 C110 64 116 88 124 94 C132 100 138 78 146 72 C154 66 160 84 168 84 C176 84 182 72 190 68 C198 64 204 60 212 58 C220 56 226 78 234 94 C242 110 248 100 256 62 C264 24 270 70 278 72 C286 74 292 68 300 70 C308 72 314 90 322 96 C330 102 336 82 344 76 C352 70 358 84 366 84 C372 84 376 74 380 70"/>
+
+      <path id="pathCurr" fill="none" stroke="var(--chart-blue)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"
+            d="M34 66 C42 70 48 72 54 58 C60 44 64 44 68 64 C72 84 76 84 82 72 C88 60 92 48 98 44 C104 40 108 50 114 60 C120 70 124 82 130 82 C136 82 140 64 146 64 C152 64 156 70 162 70 C168 70 172 38 178 30 C184 22 188 50 194 56 C200 62 204 62 210 60 C216 58 220 50 226 48 C232 46 236 60 242 58 C248 56 252 50 258 40 C264 30 268 80 274 84 C280 88 284 82 290 80 C296 78 302 68 308 66 C314 64 320 66 326 66 C332 66 338 64 346 64 C354 64 360 74 368 68 C374 62 377 66 380 66"/>
+
+      <line id="scrubLine" class="scrub-line" x1="0" y1="12" x2="0" y2="112"/>
+      <circle id="scrubDot" class="scrub-dot" cx="0" cy="0" r="4.5"/>
+    </svg>
+
+    <div class="x-labels" id="uiXLabels">
+      <span>Jul 17</span>
+      <span>Jul 27</span>
+      <span>Aug 6</span>
+    </div>
+  </div>
+
+  <!-- Timeframe Control Buttons -->
+  <div class="timeframe-controls">
+    <button class="ctrl-chip" id="btnOpenPeriod" type="button">
+      <svg viewBox="0 0 20 20"><path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"/></svg>
+      <span id="uiPeriodBtnLabel">30 days</span>
+    </button>
+    <button class="ctrl-chip" type="button" onclick="alert('Viewing Analytics Report')">
+      <svg viewBox="0 0 20 20"><path d="M4 2h8l4 4v12a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1zm8 1.5V6h2.5L12 3.5z"/></svg>
+      <span>View report</span>
+    </button>
+  </div>
+
+  <!-- Sheet Activity -->
+  <main class="bottom-sheet">
+    <h2 class="sheet-headline">Good evening! <span>Here's your activity</span></h2>
+
+    <div class="activity-scroll-row">
+      <div class="activity-card" onclick="alert('Viewing Payouts Schedule')">
+        <span class="act-title">Payouts today</span>
+        <div class="act-bottom">
+          <span class="act-val" id="uiPayoutsVal">-$3.12</span>
+          <svg class="act-icon" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+      </div>
+
+      <div class="activity-card" onclick="alert('Viewing Unfulfilled Orders')">
+        <span class="act-title">Fulfill orders</span>
+        <div class="act-bottom">
+          <span class="act-val">50+</span>
+          <svg class="act-icon" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        </div>
+      </div>
+
+      <div class="activity-card" onclick="alert('Reviewing Flagged Orders')">
+        <span class="act-title">Review high risk</span>
+        <div class="act-bottom">
+          <span class="act-val">1</span>
+          <svg class="act-icon" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Store Activity Item -->
+    <div class="live-order-card">
+      <div class="loc-badge">#9402</div>
+      <div>
+        <div class="loc-title">Order placed from Instagram</div>
+        <div class="loc-sub">Lucas R. · 2 items · 3m ago</div>
+      </div>
+      <div class="loc-price" id="uiRecentOrderPrice">$84.00</div>
+    </div>
+
+    <div class="promo-credit-box">
+      <div class="credit-head" id="uiCreditHead">Apply to unlock $12,000 with Shopify Credit</div>
+      <div class="credit-body">Get rewarded on your marketing spend. Use the Shopify Credit pay-in-full Visa&reg; business card to earn up to 3% cashback on eligible marketing expenses, such as Meta...</div>
+    </div>
+  </main>
+
+  <!-- iOS Bottom Tab Bar -->
+  <nav class="ios-tab-bar">
+    <button class="tab-item active" type="button">
+      <svg viewBox="0 0 20 20"><path d="M10 2l8 7h-3v8H5V9H2l8-7z"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="tab-item" type="button">
+      <div class="tab-bubble">3</div>
+      <svg viewBox="0 0 20 20"><path d="M4 3h12l1 4H3l1-4zm-1 5h14v9a1 1 0 01-1 1H4a1 1 0 01-1-1V8z"/></svg>
+      <span>Orders</span>
+    </button>
+    <button class="tab-item" type="button">
+      <svg viewBox="0 0 20 20"><path d="M4 4h5v5H4V4zm7 0h5v5h-5V4zM4 11h5v5H4v-5zm7 0h5v5h-5v-5z"/></svg>
+      <span>Products</span>
+    </button>
+    <button class="tab-item" type="button">
+      <svg viewBox="0 0 20 20"><path d="M10 10a3 3 0 100-6 3 3 0 000 6zm-7 8a7 7 0 0114 0H3z"/></svg>
+      <span>Customers</span>
+    </button>
+    <button class="tab-item" type="button">
+      <svg viewBox="0 0 20 20"><path d="M4 9h2v2H4V9zm5 0h2v2H9V9zm5 0h2v2h-2V9z"/></svg>
+      <span>Store</span>
+    </button>
+  </nav>
+
+  <!-- Timeframe Selector Sheet -->
+  <div class="period-popup" id="periodModal">
+    <div class="period-menu-sheet">
+      <div class="period-opt" data-p="today"><span>Today</span></div>
+      <div class="period-opt" data-p="7"><span>Last 7 days</span></div>
+      <div class="period-opt selected" data-p="30"><span>Last 30 days</span><span>✓</span></div>
+      <div class="period-opt" data-p="90"><span>Last 90 days</span></div>
+      <div class="period-opt" data-p="year"><span>Last 365 days</span></div>
+    </div>
+  </div>
+
+  <!-- Admin Panel Overlay -->
+  <div class="admin-modal-backdrop" id="adminModal">
+    <div class="admin-sheet">
+      <div class="admin-handle"></div>
+      <div class="admin-title">Store & Analytics Admin</div>
+      <div class="admin-sub">Change PFP avatar, store title, currencies, figures, and graph mode</div>
+
+      <div class="admin-row">
+        <span class="admin-label">Avatar Profile Style</span>
+        <select class="admin-select" id="cfgPfpStyle">
+          <option value="anime">Anime (Original Image)</option>
+          <option value="monogram">Monogram Initials</option>
+          <option value="bag">Shopify Bag Icon</option>
+        </select>
+      </div>
+
+      <div class="admin-row" id="pfpCustomRow">
+        <span class="admin-label">Monogram Text</span>
+        <input class="admin-input" id="cfgMonogram" value="NM" maxlength="3" style="text-transform: uppercase;">
+      </div>
+
+      <div class="admin-row">
+        <span class="admin-label">Shop Name</span>
+        <input class="admin-input" id="cfgStoreName" value="Neniom">
+      </div>
+
+      <div class="admin-row">
+        <span class="admin-label">Currency</span>
+        <select class="admin-select" id="cfgCurrency">
+          <option value="USD" selected>USD ($)</option>
+          <option value="EUR">EUR (€)</option>
+          <option value="GBP">GBP (£)</option>
+          <option value="CAD">CAD ($)</option>
+          <option value="AUD">AUD ($)</option>
+          <option value="JPY">JPY (¥)</option>
+        </select>
+      </div>
+
+      <div class="admin-row">
+        <span class="admin-label">Total Sales (Amount)</span>
+        <input class="admin-input" id="cfgTotalSales" type="number" step="0.01" value="41912">
+      </div>
+
+      <div class="admin-row">
+        <span class="admin-label">Sales Trend %</span>
+        <input class="admin-input" id="cfgSalesTrend" value="+71%">
+      </div>
+
+      <div class="admin-row">
+        <span class="admin-label">Orders Count</span>
+        <input class="admin-input" id="cfgOrders" type="number" value="647">
+      </div>
+
+      <div class="admin-row">
+        <span class="admin-label">Conversion Rate</span>
+        <input class="admin-input" id="cfgConv" value="0.3%">
+      </div>
+
+      <div class="admin-row">
+        <span class="admin-label">Live Visitor Count</span>
+        <input class="admin-input" id="cfgLive" type="number" value="0">
+      </div>
+
+      <div class="admin-row">
+        <span class="admin-label">Graph Waveform</span>
+        <select class="admin-select" id="cfgGraphShape">
+          <option value="neniom" selected>Neniom Volatile Spike</option>
+          <option value="bullrun">Bullish Rally Climb</option>
+          <option value="steady">Steady Wave</option>
+          <option value="moon">Vertical Moon Spike</option>
+        </select>
+      </div>
+
+      <button class="admin-btn" id="btnApplyAdmin" type="button">Apply Updates</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var CURRENCIES = {
+    USD: { symbol: "$", locale: "en-US", credit: "$12,000", sampleRecent: "$84.00" },
+    EUR: { symbol: "€", locale: "de-DE", credit: "€12.000", sampleRecent: "€84,00" },
+    GBP: { symbol: "£", locale: "en-GB", credit: "£12,000", sampleRecent: "£84.00" },
+    CAD: { symbol: "CA$", locale: "en-CA", credit: "CA$12,000", sampleRecent: "CA$84.00" },
+    AUD: { symbol: "A$", locale: "en-AU", credit: "A$12,000", sampleRecent: "A$84.00" },
+    JPY: { symbol: "¥", locale: "ja-JP", credit: "¥1,800,000", sampleRecent: "¥12,400" }
+  };
+
+  var GRAPH_WAVES = {
+    neniom: {
+      curr: "M34 66 C42 70 48 72 54 58 C60 44 64 44 68 64 C72 84 76 84 82 72 C88 60 92 48 98 44 C104 40 108 50 114 60 C120 70 124 82 130 82 C136 82 140 64 146 64 C152 64 156 70 162 70 C168 70 172 38 178 30 C184 22 188 50 194 56 C200 62 204 62 210 60 C216 58 220 50 226 48 C232 46 236 60 242 58 C248 56 252 50 258 40 C264 30 268 80 274 84 C280 88 284 82 290 80 C296 78 302 68 308 66 C314 64 320 66 326 66 C332 66 338 64 346 64 C354 64 360 74 368 68 C374 62 377 66 380 66",
+      bench: "M34 88 C44 82 50 78 58 74 C66 70 72 82 80 82 C88 82 94 76 102 70 C110 64 116 88 124 94 C132 100 138 78 146 72 C154 66 160 84 168 84 C176 84 182 72 190 68 C198 64 204 60 212 58 C220 56 226 78 234 94 C242 110 248 100 256 62 C264 24 270 70 278 72 C286 74 292 68 300 70 C308 72 314 90 322 96 C330 102 336 82 344 76 C352 70 358 84 366 84 C372 84 376 74 380 70"
+    },
+    bullrun: {
+      curr: "M34 105 C70 100 110 94 150 78 C190 62 220 45 260 32 C300 20 340 16 380 12",
+      bench: "M34 108 C100 106 180 104 260 100 C320 98 350 96 380 94"
+    },
+    steady: {
+      curr: "M34 68 C80 64 130 72 180 66 C230 60 280 68 330 64 C360 62 375 64 380 64",
+      bench: "M34 78 C80 76 130 80 180 76 C230 74 280 78 330 76 C360 74 375 76 380 76"
+    },
+    moon: {
+      curr: "M34 98 C100 95 180 92 230 88 C250 86 265 18 280 16 C300 22 330 64 380 68",
+      bench: "M34 100 C120 98 220 96 300 94 C340 92 360 92 380 90"
+    }
+  };
+
+  var state = {
+    storeName: "Neniom",
+    currency: "USD",
+    totalSales: 41912,
+    salesTrend: "+71%",
+    orders: 647,
+    ordersTrend: "+64%",
+    convRate: "0.3%",
+    convTrend: "-55%",
+    live: 0,
+    graphShape: "neniom",
+    pfpStyle: "anime",
+    monogram: "NM",
+    period: "30"
+  };
+
+  var PFP_TEMPLATES = {
+    anime: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#000000"/><path d="M32 20 Q50 35 68 20 Q80 45 74 62 Q66 84 50 82 Q34 84 26 62 Q20 45 32 20 Z" fill="#ffffff"/><path d="M40 38 L48 52 L36 50 Z M60 38 L64 50 L52 52 Z" fill="#000000"/><circle cx="43" cy="46" r="3" fill="#ffffff"/><circle cx="57" cy="46" r="3" fill="#ffffff"/><path d="M46 66 Q50 70 54 66" stroke="#000000" stroke-width="2" fill="none"/><path d="M22 34 Q32 26 42 36 M78 34 Q68 26 58 36" stroke="#000000" stroke-width="3" fill="none"/></svg>',
+    bag: '<svg viewBox="0 0 20 20" style="padding:6px;fill:#ffffff;"><path d="M14 6V5a4 4 0 00-8 0v1H3a1 1 0 00-1 1v10a2 2 0 002 2h12a2 2 0 002-2V7a1 1 0 00-1-1h-3zm-6-1a2 2 0 114 0v1H8V5zm6 4a1 1 0 11-2 0 1 1 0 012 0zm-8 0a1 1 0 11-2 0 1 1 0 012 0z"/></svg>'
+  };
+
+  function formatCurrency(val, curCode) {
+    var c = CURRENCIES[curCode] || CURRENCIES.USD;
+    var n = Number(val);
+    var formatted = Math.floor(n).toLocaleString(c.locale);
+    return c.symbol + formatted;
+  }
+
+  function renderView() {
+    var cur = CURRENCIES[state.currency] || CURRENCIES.USD;
+
+    document.getElementById("uiStoreName").textContent = state.storeName;
+    document.getElementById("uiTotalSales").textContent = formatCurrency(state.totalSales, state.currency);
+    document.getElementById("uiSalesTrend").textContent = state.salesTrend;
+    document.getElementById("uiOrdersCount").textContent = Number(state.orders).toLocaleString(cur.locale);
+    document.getElementById("uiOrdersTrend").textContent = state.ordersTrend;
+    document.getElementById("uiConvRate").textContent = state.convRate;
+    document.getElementById("uiConvTrend").textContent = state.convTrend;
+    document.getElementById("uiLiveCount").textContent = state.live;
+
+    // Y-Axis Labels
+    document.getElementById("uiYTop").textContent = cur.symbol + "2K";
+    document.getElementById("uiYMid").textContent = cur.symbol + "1K";
+    document.getElementById("uiYBot").textContent = cur.symbol + "0";
+
+    // Payouts & Promo
+    document.getElementById("uiPayoutsVal").textContent = "-" + cur.symbol + (state.currency === "JPY" ? "450" : "3.12");
+    document.getElementById("uiCreditHead").textContent = "Apply to unlock " + cur.credit + " with Shopify Credit";
+    document.getElementById("uiRecentOrderPrice").textContent = cur.sampleRecent;
+
+    // Waveform
+    var w = GRAPH_WAVES[state.graphShape] || GRAPH_WAVES.neniom;
+    document.getElementById("pathCurr").setAttribute("d", w.curr);
+    document.getElementById("pathBench").setAttribute("d", w.bench);
+
+    // Profile Avatar Render
+    var slot = document.getElementById("pfpRenderSlot");
+    var storeSlot = document.getElementById("storeTileSlot");
+    if (state.pfpStyle === "monogram") {
+      var monoHtml = '<div style="width:100%;height:100%;display:grid;place-items:center;background:#1e2025;color:#fff;font-size:12px;font-weight:700;">' + state.monogram + '</div>';
+      slot.innerHTML = monoHtml;
+      storeSlot.innerHTML = monoHtml;
+    } else if (state.pfpStyle === "bag") {
+      slot.innerHTML = '<div style="background:#5e8e3e;width:100%;height:100%;display:grid;place-items:center;">' + PFP_TEMPLATES.bag + '</div>';
+      storeSlot.innerHTML = '<div style="background:#5e8e3e;width:100%;height:100%;display:grid;place-items:center;">' + PFP_TEMPLATES.bag + '</div>';
+    } else {
+      slot.innerHTML = PFP_TEMPLATES.anime;
+      storeSlot.innerHTML = '<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#000000"/><path d="M30 25 Q50 40 70 25 Q82 50 72 70 Q50 90 28 70 Z" fill="#ffffff"/></svg>';
+    }
+  }
+
+  // Interactive Graph Crosshair Scrubber
+  var canvasBox = document.getElementById("chartCanvasBox");
+  var scrubLine = document.getElementById("scrubLine");
+  var scrubDot = document.getElementById("scrubDot");
+  var scrubTooltip = document.getElementById("chartTooltip");
+  var pathCurr = document.getElementById("pathCurr");
+
+  function moveScrubber(e) {
+    var rect = canvasBox.getBoundingClientRect();
+    var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    var x = Math.max(34, Math.min(380, ((clientX - rect.left) / rect.width) * 380));
+
+    scrubLine.setAttribute("x1", x);
+    scrubLine.setAttribute("x2", x);
+    scrubLine.style.opacity = "1";
+
+    var len = pathCurr.getTotalLength();
+    var pt = pathCurr.getPointAtLength(((x - 34) / (380 - 34)) * len);
+    scrubDot.setAttribute("cx", pt.x);
+    scrubDot.setAttribute("cy", pt.y);
+    scrubDot.style.opacity = "1";
+
+    var cur = CURRENCIES[state.currency] || CURRENCIES.USD;
+    var priceCalc = Math.round((state.totalSales / 22) * (1 - (pt.y - 12) / 100));
+    scrubTooltip.textContent = cur.symbol + Number(Math.max(120, priceCalc)).toLocaleString(cur.locale) + " · Jul " + Math.round(17 + ((x - 34) / 346) * 20);
+    scrubTooltip.style.left = (x / 380 * 100) + "%";
+    scrubTooltip.style.opacity = "1";
+  }
+
+  function hideScrubber() {
+    scrubLine.style.opacity = "0";
+    scrubDot.style.opacity = "0";
+    scrubTooltip.style.opacity = "0";
+  }
+
+  canvasBox.addEventListener("mousemove", moveScrubber);
+  canvasBox.addEventListener("mouseleave", hideScrubber);
+  canvasBox.addEventListener("touchmove", moveScrubber);
+  canvasBox.addEventListener("touchend", hideScrubber);
+
+  // Timeframe selector
+  var periodModal = document.getElementById("periodModal");
+  document.getElementById("btnOpenPeriod").onclick = function() {
+    periodModal.classList.add("open");
+  };
+  periodModal.onclick = function(e) {
+    if (e.target === periodModal) periodModal.classList.remove("open");
+  };
+  document.querySelectorAll(".period-opt").forEach(function(opt) {
+    opt.onclick = function() {
+      document.querySelectorAll(".period-opt").forEach(function(o) { o.classList.remove("selected"); o.innerHTML = "<span>" + o.querySelector("span").textContent + "</span>"; });
+      opt.classList.add("selected");
+      var txt = opt.querySelector("span").textContent;
+      opt.innerHTML = "<span>" + txt + "</span><span>✓</span>";
+      document.getElementById("uiPeriodBtnLabel").textContent = txt.replace("Last ", "");
+      periodModal.classList.remove("open");
+    };
+  });
+
+  // Admin Modal Handlers
+  var modal = document.getElementById("adminModal");
+
+  function openAdmin() {
+    document.getElementById("cfgStoreName").value = state.storeName;
+    document.getElementById("cfgCurrency").value = state.currency;
+    document.getElementById("cfgTotalSales").value = state.totalSales;
+    document.getElementById("cfgSalesTrend").value = state.salesTrend;
+    document.getElementById("cfgOrders").value = state.orders;
+    document.getElementById("cfgConv").value = state.convRate;
+    document.getElementById("cfgLive").value = state.live;
+    document.getElementById("cfgGraphShape").value = state.graphShape;
+    document.getElementById("cfgPfpStyle").value = state.pfpStyle;
+    document.getElementById("cfgMonogram").value = state.monogram;
+    modal.classList.add("open");
+  }
+
+  function closeAdmin(e) {
+    if (e.target === modal) modal.classList.remove("open");
+  }
+
+  document.getElementById("btnOpenAdminPfp").onclick = openAdmin;
+  document.getElementById("btnOpenAdminStore").onclick = openAdmin;
+  modal.onclick = closeAdmin;
+
+  document.getElementById("btnApplyAdmin").onclick = function() {
+    state.storeName = document.getElementById("cfgStoreName").value.trim() || "Neniom";
+    state.currency = document.getElementById("cfgCurrency").value;
+    state.totalSales = parseFloat(document.getElementById("cfgTotalSales").value) || 0;
+    state.salesTrend = document.getElementById("cfgSalesTrend").value.trim() || "+71%";
+    state.orders = parseInt(document.getElementById("cfgOrders").value, 10) || 0;
+    state.convRate = document.getElementById("cfgConv").value.trim() || "0.3%";
+    state.live = parseInt(document.getElementById("cfgLive").value, 10) || 0;
+    state.graphShape = document.getElementById("cfgGraphShape").value;
+    state.pfpStyle = document.getElementById("cfgPfpStyle").value;
+    state.monogram = document.getElementById("cfgMonogram").value.trim().toUpperCase() || "NM";
+
+    renderView();
+    modal.classList.remove("open");
+  };
+
+  window.toggleBellPip = function() {
+    var pip = document.getElementById("uiBellPip");
+    pip.style.display = (pip.style.display === "none") ? "block" : "none";
+  };
+
+  window.setActiveMetric = function(el) {
+    document.querySelectorAll(".metric-slot").forEach(function(s) { s.classList.remove("active-metric"); });
+    el.classList.add("active-metric");
+  };
+
+  // Bottom Tabs navigation handler
+  document.querySelectorAll(".tab-item").forEach(function(tab) {
+    tab.onclick = function() {
+      document.querySelectorAll(".tab-item").forEach(function(t) { t.classList.remove("active"); });
+      tab.classList.add("active");
+    };
+  });
+
+  renderView();
+})();
+</script>
+</body>
+</html>
